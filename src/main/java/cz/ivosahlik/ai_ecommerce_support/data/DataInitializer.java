@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -55,14 +56,18 @@ public class DataInitializer {
     }
 
     private List<Customer> createCustomers() {
-        List<Customer> users = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) { // Create 5 users
-            Customer customer = new Customer();
-            customer.setFullName("User " + i);
-            customer.setEmailAddress("email" + i + "@example.com");
-            customer.setPhoneNumber("123456789" + i);
-            users.add(customerRepository.save(customer)); // Save user and add to list
-        }
-        return users;
+        List<Customer> customers = IntStream.rangeClosed(1, 5)
+                .mapToObj(this::createCustomer)
+                .toList();
+
+        return customerRepository.saveAll(customers);
+    }
+
+    private Customer createCustomer(int i) {
+        Customer c = new Customer();
+        c.setFullName("User " + i);
+        c.setEmailAddress("email" + i + "@example.com");
+        c.setPhoneNumber("123456789" + i);
+        return c;
     }
 }
