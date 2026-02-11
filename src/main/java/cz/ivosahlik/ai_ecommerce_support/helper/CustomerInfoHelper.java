@@ -2,6 +2,7 @@ package cz.ivosahlik.ai_ecommerce_support.helper;
 
 import cz.ivosahlik.ai_ecommerce_support.dtos.ChatEntry;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,25 +23,18 @@ public class CustomerInfoHelper {
             return new CustomerInfo(null, null, null);
         }
 
-        Optional<String> emailAddress = history.stream()
-                .filter(entry -> "user".equalsIgnoreCase(entry.getRole()))
-                .map(ChatEntry::getContent)
-                .filter(content -> content != null && !content.isBlank())
-                .map(CustomerInfoHelper::extractEmailAddress)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
+        Optional<String> emailAddress = getEmailAddress(history);
+        Optional<String> phoneNumber = getPhoneNumber(history);
+        Optional<String> orderNumber = getOrderNumber(history);
 
-    Optional<String> phoneNumber = history.stream()
-                .filter(entry -> "user".equalsIgnoreCase(entry.getRole()))
-                .map(ChatEntry::getContent)
-                .filter(content -> content != null && !content.isBlank())
-                .map(CustomerInfoHelper::extractPhoneNumber)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
+        return new CustomerInfo(
+                emailAddress.orElse(null),
+                phoneNumber.orElse(null),
+                orderNumber.orElse(null));
+    }
 
-        Optional<String> orderNumber = history.stream()
+    private static @NonNull Optional<String> getOrderNumber(List<ChatEntry> history) {
+        return history.stream()
                 .filter(entry -> "user".equalsIgnoreCase(entry.getRole()))
                 .map(ChatEntry::getContent)
                 .filter(content -> content != null && !content.isBlank())
@@ -48,8 +42,28 @@ public class CustomerInfoHelper {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst();
+    }
 
-        return new CustomerInfo(emailAddress.orElse(null), phoneNumber.orElse(null), orderNumber.orElse(null));
+    private static @NonNull Optional<String> getPhoneNumber(List<ChatEntry> history) {
+        return history.stream()
+                .filter(entry -> "user".equalsIgnoreCase(entry.getRole()))
+                .map(ChatEntry::getContent)
+                .filter(content -> content != null && !content.isBlank())
+                .map(CustomerInfoHelper::extractPhoneNumber)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
+    }
+
+    private static @NonNull Optional<String> getEmailAddress(List<ChatEntry> history) {
+        return history.stream()
+                .filter(entry -> "user".equalsIgnoreCase(entry.getRole()))
+                .map(ChatEntry::getContent)
+                .filter(content -> content != null && !content.isBlank())
+                .map(CustomerInfoHelper::extractEmailAddress)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
     public static CustomerInfo extractCustomerInfoFromMostCurrentMessage(String entry) {
@@ -58,8 +72,9 @@ public class CustomerInfoHelper {
         }
         Optional<String> email = extractEmailAddress(entry);
         Optional<String> phone = extractPhoneNumber(entry);
-        return new CustomerInfo(email.orElse(null), phone.orElse(null));
-
+        return new CustomerInfo(
+                email.orElse(null),
+                phone.orElse(null));
     }
 
     private static Optional<String> extractEmailAddress(String emailText) {

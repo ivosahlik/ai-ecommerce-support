@@ -55,13 +55,17 @@ public class TicketService implements ITicketService{
         if (resolutionDetails == null || resolutionDetails.isEmpty()) {
             throw new IllegalArgumentException("Resolution details cannot be empty");
         }
-        return ticketRepository.findById(ticketId).map(ticket -> {
-            ticket.setResolutionDetails(resolutionDetails);
-            ticket.setResolvedAt(LocalDateTime.now());
-            ticket.setTicketStatus(TicketStatus.RESOLVED);
-            Ticket updatedTicket = ticketRepository.save(ticket);
-            return objectMapper.convertValue(updatedTicket, TicketDTO.class);
-        }).orElseThrow(()  -> new EntityNotFoundException("Ticket with id " + ticketId + " not found"));
+        return ticketRepository.findById(ticketId)
+                .map(ticket -> getTicketDTO(resolutionDetails, ticket))
+                .orElseThrow(()  -> new EntityNotFoundException("Ticket with id " + ticketId + " not found"));
+    }
+
+    private TicketDTO getTicketDTO(String resolutionDetails, Ticket ticket) {
+        ticket.setResolutionDetails(resolutionDetails);
+        ticket.setResolvedAt(LocalDateTime.now());
+        ticket.setTicketStatus(TicketStatus.RESOLVED);
+        Ticket updatedTicket = ticketRepository.save(ticket);
+        return objectMapper.convertValue(updatedTicket, TicketDTO.class);
     }
 
     @Override

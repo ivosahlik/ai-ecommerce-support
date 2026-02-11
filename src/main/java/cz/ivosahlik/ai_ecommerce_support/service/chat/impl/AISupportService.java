@@ -2,6 +2,7 @@ package cz.ivosahlik.ai_ecommerce_support.service.chat.impl;
 import cz.ivosahlik.ai_ecommerce_support.dtos.ChatEntry;
 import cz.ivosahlik.ai_ecommerce_support.service.chat.IAISupportService;
 import cz.ivosahlik.ai_ecommerce_support.utils.PromptTemplates;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -28,9 +29,8 @@ public class AISupportService implements IAISupportService {
         messages.add(new SystemMessage(PromptTemplates.AI_SUPPORT_PROMPT));
 
         history.forEach(chatEntry -> {
-            String role = chatEntry.getRole();
             String content = chatEntry.getContent();
-            switch (role) {
+            switch (chatEntry.getRole()) {
                 case "user" -> messages.add(new UserMessage(content));
                 case "assistant" -> messages.add(new AssistantMessage(content));
                 default -> {
@@ -57,6 +57,11 @@ public class AISupportService implements IAISupportService {
         List<Message> messages = new ArrayList<>();
         messages.add(new SystemMessage(prompt));
 
+        return getContent(messages);
+    }
+
+    @NonNull
+    private Mono<String> getContent(List<Message> messages) {
         return Mono.fromCallable(() -> {
             ChatClient.CallResponseSpec responseSpec = chatClient.prompt()
                     .messages(messages)
@@ -74,16 +79,7 @@ public class AISupportService implements IAISupportService {
         List<Message> messages = new ArrayList<>();
         messages.add(new SystemMessage(PromptTemplates.CUSTOMER_CONVERSATION_SUMMARY_PROMPT));
         messages.add(new UserMessage(userConversationText));
-        return Mono.fromCallable(() -> {
-            ChatClient.CallResponseSpec responseSpec = chatClient.prompt()
-                    .messages(messages)
-                    .call();
-            String content = responseSpec.content();
-            if (content == null) {
-                throw new IllegalStateException("AI response content is null");
-            }
-            return content.trim();
-        }).subscribeOn(Schedulers.boundedElastic());
+        return getContent(messages);
     }
 
     @Override
@@ -91,31 +87,13 @@ public class AISupportService implements IAISupportService {
         List<Message> messages = new ArrayList<>();
         messages.add(new SystemMessage(PromptTemplates.TITLE_GENERATION_PROMPT));
         messages.add(new SystemMessage(summarizedConversation));
-        return Mono.fromCallable(() -> {
-            ChatClient.CallResponseSpec responseSpec = chatClient.prompt()
-                    .messages(messages)
-                    .call();
-            String content = responseSpec.content();
-            if (content == null) {
-                throw new IllegalStateException("AI response content is null");
-            }
-            return content.trim();
-        }).subscribeOn(Schedulers.boundedElastic());
+        return getContent(messages);
     }
     @Override
     public Mono<String> generateEmailNotificationMessage() {
         List<Message> messages = new ArrayList<>();
         messages.add(new SystemMessage(PromptTemplates.EMAIL_NOTIFICATION_PROMPT));
-        return Mono.fromCallable(() -> {
-            ChatClient.CallResponseSpec responseSpec = chatClient.prompt()
-                    .messages(messages)
-                    .call();
-            String content = responseSpec.content();
-            if (content == null) {
-                throw new IllegalStateException("AI response content is null");
-            }
-            return content;
-        }).subscribeOn(Schedulers.boundedElastic());
+        return getContent(messages);
     }
 
     @Override

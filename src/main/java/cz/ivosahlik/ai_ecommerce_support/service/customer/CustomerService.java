@@ -3,6 +3,7 @@ package cz.ivosahlik.ai_ecommerce_support.service.customer;
 import cz.ivosahlik.ai_ecommerce_support.model.Customer;
 import cz.ivosahlik.ai_ecommerce_support.repository.CustomerRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,13 +39,15 @@ public class CustomerService implements ICustomerService {
     @Override
     public Customer updateCustomer(Long id, Customer updatedCustomer) {
         return customerRepository.findById(id)
-                .map(customer -> {
-                    customer.setFullName(updatedCustomer.getFullName());
-                    customer.setEmailAddress(updatedCustomer.getEmailAddress());
-                    customer.setPhoneNumber(updatedCustomer.getPhoneNumber());
-                    return customerRepository.save(customer);
-                })
+                .map(customer -> getCustomer(updatedCustomer, customer))
                 .orElseThrow(() -> new RuntimeException("Customer not found with id " + id));
+    }
+
+    private @NonNull Customer getCustomer(Customer updatedCustomer, Customer customer) {
+        customer.setFullName(updatedCustomer.getFullName());
+        customer.setEmailAddress(updatedCustomer.getEmailAddress());
+        customer.setPhoneNumber(updatedCustomer.getPhoneNumber());
+        return customerRepository.save(customer);
     }
 
     @Override
