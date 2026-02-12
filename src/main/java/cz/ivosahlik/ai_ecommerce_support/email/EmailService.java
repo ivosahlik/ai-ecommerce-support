@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -17,10 +18,14 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendNotificationEmail(String to, String subject, String senderName, String mailContent) throws MessagingException, UnsupportedEncodingException {
+    @Value("${email.sender}")
+    private String emailSender;
+
+    public void sendNotificationEmail(String to, String subject, String senderName,
+                                      String mailContent) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
-        var messageHelper = new MimeMessageHelper(message,true, "UTF-8");
-        messageHelper.setFrom(EmailProperties.DEFAULT_USERNAME, senderName);
+        var messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        messageHelper.setFrom(emailSender, senderName);
         messageHelper.setTo(to);
         messageHelper.setSubject(subject);
         messageHelper.setText(mailContent, true);

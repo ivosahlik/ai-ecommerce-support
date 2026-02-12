@@ -8,19 +8,20 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 
-@Slf4j
-@Component
-@RequiredArgsConstructor
-public class TicketCreationEventListener implements ApplicationListener<TicketCreationEvent> {
-    private final EmailNotificationService emailNotificationService;
-
-    @Override
-    public void onApplicationEvent(TicketCreationEvent event) {
-        Ticket ticket = event.getTicket();
-        try {
-            emailNotificationService.sendTicketNotificationEmail(ticket);
-        } catch (MessagingException e) {
-            log.error("Failed to send ticket notification email to the customer: {}", e.getMessage());
-        }
-    }
-}
+// old way. better way in TicketCreationAnnotationEventListener
+//@Slf4j
+//@Component
+//@RequiredArgsConstructor
+//public class TicketCreationEventListener implements ApplicationListener<TicketCreationEvent> {
+//    private final EmailNotificationService emailNotificationService;
+//
+//    @Override
+//    public void onApplicationEvent(TicketCreationEvent event) {
+//        Ticket ticket = event.getTicket();
+//        try {
+//            emailNotificationService.sendTicketNotificationEmail(ticket);
+//        } catch (MessagingException e) {
+//            log.error("Failed to send ticket notification email to the customer: {}", e.getMessage());
+//        }
+//    }
+//}
