@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 @Configuration
 public class AsyncConfig {
 
+    @Primary
     @Bean
     public Executor asyncExecutor() {
         return Executors.newVirtualThreadPerTaskExecutor();

@@ -1,3 +1,28 @@
+# Ollama models
+ollama pull deepseek-coder:33b
+ollama list
+
+```
+(base) ivovosahlik@Ivos-MacBook-Pro-2 be-section-12-13-fe % ollama list
+NAME                     ID              SIZE      MODIFIED    
+llama3.1:latest          46e0c10c039e    4.9 GB    11 days ago    
+llama3.1:8b              46e0c10c039e    4.9 GB    11 days ago    
+deepseek-coder-v2:16b    63fb193b3a9b    8.9 GB    12 days ago    
+deepseek-coder:33b       acec7c0b0fd9    18 GB     12 days ago    
+deepseek-coder:latest    3ddd2d3fc8d2    776 MB    12 days ago    
+codestral:latest         0898a8b286d5    12 GB     12 days ago    
+llama3-chatqa:8b         b37a98d204b2    4.7 GB    2 weeks ago    
+mistral:latest           6577803aa9a0    4.4 GB    2 weeks ago    
+gpt-oss:20b              17052f91a42e    13 GB     2 weeks ago    
+gemma3:12b               f4031aab637d    8.1 GB    2 weeks ago    
+qwen3:8b                 500a1f067a9f    5.2 GB    2 weeks ago    
+deepseek-r1:latest       6995872bfe4c    5.2 GB    2 weeks ago  
+```
+ollama run llama3.1:latest
+
+
+
+
 # .env example, create .env in root project and put correct configuration or you can use environment variables in IntelliJ IDEA
 ```
 ## Database Configuration

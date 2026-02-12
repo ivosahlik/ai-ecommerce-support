@@ -95,7 +95,7 @@ public class ConversationService implements IConversationService {
     private Ticket finalizeConversationAndCreateTicket(String sessionId) {
         List<ChatEntry> history = activeConversations.get(sessionId);
         Customer customer = getCustomerInformation(history);
-        log.info("The initial customer information: {}",customer);
+        log.info("The initial customer information: {}", customer);
         if (customer == null) {
             String errorMessage = MessageUtil.INVALID_CONTACT_INFO_MESSAGE;
             //Here we are going to send the message to the customer. (Websocket)
@@ -221,16 +221,17 @@ public class ConversationService implements IConversationService {
         if (Boolean.TRUE.equals(waitingForContactCorrection.get(sessionId))) {
             CustomerInfo customerInfo = CustomerInfoHelper.extractCustomerInfoFromMostCurrentMessage(userMessage);
 
-            log.info("The corrected customer information 1: {}",customerInfo.toString());
+            log.info("The corrected customer information 1: {}", customerInfo);
 
             replaceOldContactInformationInHistory(history, customerInfo.emailAddress(), customerInfo.phoneNumber());
             CustomerInfo customer = CustomerInfoHelper.extractUserInformationFromChatHistory(history);
 
-            log.info("The corrected customer information 2: {}",customer.toString());
+            log.info("The corrected customer information 2: {}", customer);
 
-            Optional<Customer> theCustomer = Optional.ofNullable(userRepository.findByEmailAddressAndPhoneNumber(customer.emailAddress(), customer.phoneNumber()));
+            Optional<Customer> theCustomer = Optional.ofNullable(
+                    userRepository.findByEmailAddressAndPhoneNumber(customer.emailAddress(), customer.phoneNumber()));
 
-            log.info("The corrected customer information 3: {}",theCustomer.toString());
+            log.info("The corrected customer information 3: {}", theCustomer);
 
             if (theCustomer.isPresent()) {
                 waitingForContactCorrection.remove(sessionId);

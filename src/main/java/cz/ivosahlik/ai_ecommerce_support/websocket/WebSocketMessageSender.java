@@ -1,17 +1,7 @@
 package cz.ivosahlik.ai_ecommerce_support.websocket;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
+public interface WebSocketMessageSender {
 
-@Service
-@RequiredArgsConstructor
-public class WebSocketMessageSender {
-    private final SimpMessagingTemplate messagingTemplate;
-
-    public void sendMessageToUser(String sessionId, String message) {
-        String destination = "/topic/message/" + sessionId;
-        messagingTemplate.convertAndSend(destination, message);
-    }
+    void sendMessageToUser(String sessionId, String message);
 
 }

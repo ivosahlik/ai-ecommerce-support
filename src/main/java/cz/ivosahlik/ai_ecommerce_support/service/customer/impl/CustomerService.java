@@ -1,7 +1,8 @@
-package cz.ivosahlik.ai_ecommerce_support.service.customer;
+package cz.ivosahlik.ai_ecommerce_support.service.customer.impl;
 
 import cz.ivosahlik.ai_ecommerce_support.model.Customer;
 import cz.ivosahlik.ai_ecommerce_support.repository.CustomerRepository;
+import cz.ivosahlik.ai_ecommerce_support.service.customer.ICustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -90,6 +90,11 @@
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-ollama</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-resolver-dns-native-macos</artifactId>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
